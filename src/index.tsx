@@ -78,9 +78,10 @@ app.route('/', gallery)
 
 devtools(app, { serveStatic })
 
-const port = 3000
+const port = process.env.PORT ?? 3000
 serve({
   fetch: app.fetch,
+  //@ts-ignore
   port
 });
 console.log(`Server is running on port ${port}`);
