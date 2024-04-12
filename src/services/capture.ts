@@ -1,13 +1,14 @@
 import { $fetch, FetchError } from 'ofetch'
 
 
-const BASE_URL = 'https://capture.kodadot.art'
+// const BASE_URL = 'https://capture.kodadot.art'
 // const BASE_URL = "http://localhost:3000/api";
-
+const BASE_URL = "https://vercelgl-beta.vercel.app/api";
 
 export const doScreenshot = async (url: string) => {
 
   try {
+    console.log("Fetching image...")
     const res = await fetch(`${BASE_URL}/screenshot`, {
       method: 'POST',
       body: JSON.stringify({
@@ -22,14 +23,9 @@ export const doScreenshot = async (url: string) => {
       return null
     }
 
-
-    const buffer = await res.arrayBuffer()
-
-    //Convert buffer to be displayable in frog image
-    const base64Image = Buffer.from(buffer).toString("base64");
-    const dataURI = `data:image/png;base64,${base64Image}`;
-
-    return dataURI
+    const image = await res.text()
+    console.log({image})
+    return image
 
   } catch (error) {
     console.log({error})

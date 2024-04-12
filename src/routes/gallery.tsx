@@ -35,7 +35,7 @@ app.frame('/', async (c) => {
   const url = `${imageWithUri}/?hash=${hash}`;
 
   const imageMain = await doScreenshot(url);
-
+  
   if (!imageMain) {
     throw new Error("Image not available")
   }
@@ -72,7 +72,7 @@ app.transaction('/mint', (c) => {
 
 app.frame('/finish', (c) => {
   const { transactionId } = c;
-  
+
 
   const random = Math.floor(Math.random() * 111) + 1;
 
