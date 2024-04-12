@@ -16,7 +16,8 @@ export const app = new Frog<HonoEnv>({})
 
 
 
-app.frame('/', async (c) => {
+app.frame("/", async (c) => {
+  const { status } = c;
   // const { chain, id } = { chain: 'base', id: '0x25194dfc7981d8a13367fe19b5b1c5fc010d535f' } //c.req.param()
   // const collection = await getCollection(chain, id)
   const collection = {
@@ -24,26 +25,30 @@ app.frame('/', async (c) => {
     image: "ipfs://bafybeidsrzf3zbuopqdta5qmuduhcr5iiejfy3cakctygkvsrfg7fsbng4",
     uri: "ipfs://bafybeiexwsrhle2f4gjaptc5b3fm2rfo4ztfy5unsxointkqzyoarbpmsy",
   };
+  let image;
+  if (status === "response") {
+    // const image = $purifyOne(collection.image, 'kodadot_beta')
+    const imageWithUri = $purifyOne(collection.uri, "kodadot_beta");
+    const hash = hashOf(Date.now().toString());
+    // const supply = collection.supply
+    // const location = kodaUrl(chain, id)
+    // console.log(image)
 
-  // const image = $purifyOne(collection.image, 'kodadot_beta')
-  const imageWithUri = $purifyOne(collection.uri, 'kodadot_beta')
-  const hash = hashOf(Date.now().toString());
-  // const supply = collection.supply
-  // const location = kodaUrl(chain, id)
-  // console.log(image)
+    const url = `${imageWithUri}/?hash=${hash}`;
 
-  const url = `${imageWithUri}/?hash=${hash}`;
-
-  const imageMain = await doScreenshot(url);
-  
-  if (!imageMain) {
-    throw new Error("Image not available")
+    const imageMain = await doScreenshot(url);
+    image = imageMain;
+  } else {
+    image = $purifyOne(collection.image, "kodadot_beta");
   }
-  const label = `${collection.name} [${MINT_PRICE} ETH]`
+  if (!image) {
+    image = $purifyOne(collection.image, "kodadot_beta");
+  }
+  const label = `${collection.name} [${MINT_PRICE} ETH]`;
   return c.res({
     // browserLocation: location,
     title: collection.name,
-    image: imageMain,
+    image,
     action: "/finish",
     imageAspectRatio: "1:1",
     intents: [
@@ -52,10 +57,12 @@ app.frame('/', async (c) => {
         {label}
         {""}
       </Button.Transaction>,
-      <Button action="/" value="reload">Reload 🔄</Button>,
+      <Button action="/" value="reload">
+        Reload 🔄
+      </Button>,
     ],
   });
-})
+});
 
 app.transaction('/mint', (c) => {
   const { address } = c
