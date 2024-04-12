@@ -1,9 +1,12 @@
 import { Frog } from 'frog'
 import { devtools } from 'frog/dev'
-import { serveStatic } from 'frog/serve-static'
+// import { serveStatic } from 'frog/serve-static'
 import { app as gallery } from './routes/gallery'
 import { vars } from './ui'
+import { serve } from '@hono/node-server'
+import { serveStatic } from '@hono/node-server/serve-static'
 // import { neynar } from 'frog/hubs'
+
 
 export const app = new Frog({
   // Supply a Hub to enable frame verification.
@@ -63,14 +66,23 @@ app.route('/', gallery)
 //   })
 // })
 
-const isCloudflareWorker = typeof caches !== 'undefined'
-if (isCloudflareWorker) {
-  const manifest = await import('__STATIC_CONTENT_MANIFEST')
-  const serveStaticOptions = { manifest, root: './' }
-  app.use('/*', serveStatic(serveStaticOptions))
-  devtools(app, { assetsPath: '/frog', serveStatic, serveStaticOptions })
-} else {
-  devtools(app, { serveStatic })
-}
+// const isCloudflareWorker = typeof caches !== 'undefined'
+// if (isCloudflareWorker) {
+//   const manifest = await import('__STATIC_CONTENT_MANIFEST')
+//   const serveStaticOptions = { manifest, root: './' }
+//   app.use('/*', serveStatic(serveStaticOptions))
+//   devtools(app, { assetsPath: '/frog', serveStatic, serveStaticOptions })
+// } else {
+//   devtools(app, { serveStatic })
+// }
+
+devtools(app, { serveStatic })
+
+const port = 3000
+serve({
+  fetch: app.fetch,
+  port
+});
+console.log(`Server is running on port ${port}`);
 
 export default app

@@ -5,10 +5,12 @@
   "scripts": {
     "dev": "frog dev",
     "wrangler:dev": "wrangler dev src/index.tsx",
-    "wrangler:deploy": "wrangler deploy --minify src/index.tsx",
-    "wrangler:static": "cp -r ./node_modules/frog/_lib/ui/.frog ./public/frog"
+    "wrangler:deploy": "wrangler deploy src/index.tsx",
+    "wrangler:static": "cp -r ./node_modules/frog/_lib/ui/.frog ./public/frog",
+    "serve": "tsx src/index.tsx"
   },
   "dependencies": {
+    "@hono/node-server": "^1.10.0",
     "@kodadot1/minipfs": "^0.4.3-rc.1",
     "@kodadot1/uniquery": "^0.6.0-rc.0",
     "@polkadot/util-crypto": "^12.6.2",
