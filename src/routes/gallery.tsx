@@ -3,10 +3,11 @@ import { $purifyOne } from '@kodadot1/minipfs'
 import { Button, Frog, parseEther } from 'frog'
 import abi from '../abi.json'; // with { type: 'json' }
 import { CHAIN_ID, CONTRACT, HonoEnv, MINT_PRICE } from '../constants'
-import { doScreenshot } from '../services/capture'
+// import { doScreenshot } from '../services/capture'
 import { getImage } from '../services/dyndata'
 import { getItem } from '../services/uniquery'
 import { baseTxUrl, hashOf, kodaUrl } from '../utils'
+import { doScreenshot } from '../services/screenshot';
 
 
 
@@ -17,6 +18,7 @@ export const app = new Frog<HonoEnv>({})
 
 
 app.frame("/", async (c) => {
+
   const { status } = c;
   // const { chain, id } = { chain: 'base', id: '0x25194dfc7981d8a13367fe19b5b1c5fc010d535f' } //c.req.param()
   // const collection = await getCollection(chain, id)
@@ -27,6 +29,7 @@ app.frame("/", async (c) => {
   };
   let image;
   if (status === "response") {
+    console.time("Image");
     // const image = $purifyOne(collection.image, 'kodadot_beta')
     const imageWithUri = $purifyOne(collection.uri, "kodadot_beta");
     const hash = hashOf(Date.now().toString());
@@ -38,6 +41,7 @@ app.frame("/", async (c) => {
 
     const imageMain = await doScreenshot(url);
     image = imageMain;
+    console.timeEnd("Image");
   } else {
     image = $purifyOne(collection.image, "kodadot_beta");
   }
